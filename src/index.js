@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
-
+const opdRoutes = require("./routes/opdRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 
 mongoose
@@ -34,10 +34,13 @@ const corsOption = {
 // Middleware
 app.use(cors(corsOption));
 app.use(express.json());
+
+//OPD routes
+app.use("/api/opds", opdRoutes);
+
 // Serve uploaded images statically
 app.use("/uploads", express.static("uploads"));
 app.use("/api/blogs", blogRoutes);
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

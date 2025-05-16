@@ -1,0 +1,60 @@
+const multer = require("multer");
+const path = require("path");
+
+// Temporarily store files in memory
+const storage = multer.memoryStorage();
+
+// File filter (accept only images)
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|webp/;
+  const ext = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mime = allowedTypes.test(file.mimetype);
+
+  if (ext && mime) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed!"));
+  }
+};
+
+const uploadMiddleware = multer({
+  storage,
+  fileFilter,
+}).single("image"); // Expecting a single field called 'image'
+
+const { uploadToCloudinary } = require("../configure/cloudinary");
+
+const opdCampUpload = async (req, res, next) => {
+  uploadMiddleware(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    if (!req.file) {
+      return next();
+    }
+
+    try {
+      // Convert buffer to temporary file
+      const tempFilePath = path.join(__dirname, `../../temp-${Date.now()}-${req.file.originalname}`);
+      require('fs').writeFileSync(tempFilePath, req.file.buffer);
+      
+      // Upload to Cloudinary
+      const result = await uploadToCloudinary({ path: tempFilePath }, 'opd-camps');
+      
+      // Clean up temp file
+      require('fs').unlinkSync(tempFilePath);
+      
+      // Add the Cloudinary URL to the request
+      req.file.filename = result.url;
+      next();
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      return res.status(500).json({ error: 'Failed to upload image' });
+    }
+  });
+};
+
+module.exports = opdCampUpload;

@@ -44,15 +44,15 @@ const getAllTodaysOPDCamps = async (req, res) => {
   }
 };
 
-
 // Fetch the most upcoming OPD camp (next one)
 const getMostUpcomingOPDCamp = async (req, res) => {
     try {
         const today = new Date();
         const nextCamp = await OPDCamps.findOne({ date: { $gte: today } })
-            .sort({ date: 1 });
+            .sort({ date: 1 })
+            .limit(1);
 
-        if (!nextCamp) {
+            if (!nextCamp) {
             return res.status(404).json({ message: "No upcoming camp found" });
         }
 

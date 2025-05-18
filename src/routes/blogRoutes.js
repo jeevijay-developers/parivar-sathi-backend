@@ -78,4 +78,14 @@ router.post("/add-blog", uploadMiddleware, handleCloudinaryUpload, async (req, r
   }
 });
 
+router.get("/AllBlogs", async (req, res) => {
+  try {
+    const blogs = await Blog.find();
+    res.status(200).json(blogs);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error fetching blogs" });
+  }
+});
+
 module.exports = router;

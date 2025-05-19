@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const opdRoutes = require("./routes/opdRoutes");
 const blogRoutes = require("./routes/blogRoutes");
+const patientRegistration = require("./routes/PatientRegistrationRoute");
+const clinicPartner = require("./routes/clinicPartnerRoute")
+
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -38,7 +41,8 @@ app.use(express.json());
 
 //OPD routes
 app.use("/api/opds", opdRoutes);
-
+app.use("/api", patientRegistration);
+app.use("/api", clinicPartner);
 // Serve uploaded images statically
 app.use("/uploads", express.static("uploads"));
 app.use("/api/blogs", blogRoutes);

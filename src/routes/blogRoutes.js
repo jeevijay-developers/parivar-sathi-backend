@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const Blog = require("../modals/Blog");
 const { uploadToCloudinary } = require("../configure/cloudinary");
+const { getAllBlogs } = require("../controller/BlogController")
 
 const router = express.Router();
 
@@ -78,14 +79,6 @@ router.post("/add-blog", uploadMiddleware, handleCloudinaryUpload, async (req, r
   }
 });
 
-router.get("/AllBlogs", async (req, res) => {
-  try {
-    const blogs = await Blog.find();
-    res.status(200).json(blogs);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Error fetching blogs" });
-  }
-});
+router.get('/getAllBlogs', getAllBlogs);
 
 module.exports = router;

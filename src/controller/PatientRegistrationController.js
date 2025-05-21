@@ -53,4 +53,14 @@ const registerOpd = async (req, res) => {
   }
 };
 
-module.exports = {registerOpd}
+const getRegisteredPatients = async (req, res) => {
+  try{
+    const registeredPatients = await OpdRegistration.find();
+    return res.status(200).json(registeredPatients);
+  }catch(err){
+    console.error(err);
+    return res.status(500).json({ message: 'Unable to find registered patients' });
+  }
+} 
+
+module.exports = {registerOpd, getRegisteredPatients}

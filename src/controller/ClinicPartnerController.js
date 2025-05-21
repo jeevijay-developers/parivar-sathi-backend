@@ -66,4 +66,13 @@ const ClinicPartnershipRegister = async (req, res) => {
   }
 };
 
-module.exports = {ClinicPartnershipRegister};
+const getRegisteredClinics = async (req, res) => {
+  try{
+    const registeredClinics = await ClinicPartnership.find();
+    return res.status(200).json(registeredClinics);
+  }catch(err){
+    return res.status(500).json({ message: 'Unable to find registered clinics' });
+  }
+}
+
+module.exports = {ClinicPartnershipRegister, getRegisteredClinics};

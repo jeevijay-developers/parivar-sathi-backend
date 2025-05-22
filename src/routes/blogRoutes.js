@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const Blog = require("../modals/Blog");
 const { uploadToCloudinary } = require("../configure/cloudinary");
-const { getAllBlogs } = require("../controller/BlogController")
+const { getAllBlogs, getBlog } = require("../controller/BlogController")
 
 const router = express.Router();
 
@@ -80,5 +80,5 @@ router.post("/add-blog", uploadMiddleware, handleCloudinaryUpload, async (req, r
 });
 
 router.get('/getAllBlogs', getAllBlogs);
-
+router.get('/getBlog/:id', getBlog);
 module.exports = router;

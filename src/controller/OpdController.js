@@ -13,6 +13,7 @@ const getNextFourOPDCamps = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+
 const getNextOPDCamps = async (req, res) => {
     try {
         const today = new Date();
@@ -43,7 +44,6 @@ const getAllTodaysOPDCamps = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 // Fetch the most upcoming OPD camp (next one)
 const getMostUpcomingOPDCamp = async (req, res) => {
     try {
@@ -86,7 +86,6 @@ const addNextOPDCamps = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 // to fetch 4 previous camps
 const getFourPreviousOPDCamps = async (req, res) => {
     try {
@@ -116,5 +115,17 @@ const getAllPreviousOPDCamps = async (req, res) => {
     }
 };
 
+const deleteOPDCamp = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCamp = await OPDCamps.findByIdAndDelete(id);
+    if (!deletedCamp) {
+      return res.status(404).json({ message: "OPD Camp not found" });
+    }
+    return res.status(200).json({ message: "OPD Camp deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
-module.exports = {getAllPreviousOPDCamps, getNextFourOPDCamps, getMostUpcomingOPDCamp, addNextOPDCamps, getFourPreviousOPDCamps, getAllTodaysOPDCamps, getNextOPDCamps};
+module.exports = {deleteOPDCamp, getAllPreviousOPDCamps, getNextFourOPDCamps, getMostUpcomingOPDCamp, addNextOPDCamps, getFourPreviousOPDCamps, getAllTodaysOPDCamps, getNextOPDCamps};

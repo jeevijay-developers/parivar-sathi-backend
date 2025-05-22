@@ -47,6 +47,7 @@ app.use("/api", clinicPartner);
 // Serve uploaded images statically
 app.use("/uploads", express.static("uploads"));
 app.use("/api/blogs", blogRoutes);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

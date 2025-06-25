@@ -8,6 +8,7 @@ const opdRoutes = require("./routes/opdRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const patientRegistration = require("./routes/PatientRegistrationRoute");
 const clinicPartner = require("./routes/clinicPartnerRoute")
+const consultRoutes = require("./routes/consultationRoute")
 
 
 mongoose
@@ -44,6 +45,7 @@ app.use(express.json());
 app.use("/api/opds", opdRoutes);
 app.use("/api", patientRegistration);
 app.use("/api", clinicPartner);
+app.use("/api/consult", consultRoutes);
 // Serve uploaded images statically
 app.use("/uploads", express.static("uploads"));
 app.use("/api/blogs", blogRoutes);

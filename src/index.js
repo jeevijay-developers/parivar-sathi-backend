@@ -20,9 +20,10 @@ mongoose
 // handle CORS
 const DEV_ORIGIN = process.env.DEV_ENV;
 const TEST_ORIGIN = process.env.TEST_ENV;
+const LANDING_ORIGIN = process.env.LANDING_PAGE_ENV;
 const ADMIN_ORIGIN = process.env.ADMIN_ENV;
 const PROD_ORIGIN = process.env.PROD_ENV;
-const allowedOrigins = [DEV_ORIGIN, PROD_ORIGIN, ADMIN_ORIGIN, TEST_ORIGIN];
+const allowedOrigins = [DEV_ORIGIN, PROD_ORIGIN, ADMIN_ORIGIN, TEST_ORIGIN, LANDING_ORIGIN];
 
 const corsOption = {
   origin: (origin, callback) => {

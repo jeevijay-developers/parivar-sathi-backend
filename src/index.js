@@ -9,7 +9,7 @@ const blogRoutes = require("./routes/blogRoutes");
 const patientRegistration = require("./routes/PatientRegistrationRoute");
 const clinicPartner = require("./routes/clinicPartnerRoute")
 const consultRoutes = require("./routes/consultationRoute")
-
+const joinUsRoutes = require("./routes/joinUsRoutes");
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -47,6 +47,10 @@ app.use("/api/opds", opdRoutes);
 app.use("/api", patientRegistration);
 app.use("/api", clinicPartner);
 app.use("/api/consult", consultRoutes);
+
+// Join us routes
+app.use("/api/joinus", joinUsRoutes);
+
 // Serve uploaded images statically
 app.use("/uploads", express.static("uploads"));
 app.use("/api/blogs", blogRoutes);

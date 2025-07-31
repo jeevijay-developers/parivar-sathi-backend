@@ -34,7 +34,7 @@ const addJoinUsForm = async (req, res) => {
       resumeUrl = uploadResult.url;
 
       // Delete the file from /uploads after uploading to Cloudinary
-      const filePath = path.join(__dirname, '..', 'uploads', req.file.filename);
+      const filePath = path.join(__dirname, '../..', 'uploads', req.file.filename);
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Failed to delete local resume file:', err.message);

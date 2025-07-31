@@ -8,7 +8,7 @@ const JoinUsSchema = new mongoose.Schema({
   preferredRole: { 
     type: String, 
     enum: [
-      'Fertility-Counselor', 
+      'Fertility Counselor', 
       'Doctor (IVF/Gynae)', 
       'OPD Camp Coordinator', 
       'Patient Support/Telecaller', 
@@ -19,10 +19,10 @@ const JoinUsSchema = new mongoose.Schema({
   otherRole: { type: String }, // if 'Other' is selected
   currentOccupation: { type: String, required: true },
   yearsOfExperience: { type: Number, required: true },
-  preferredWorkMode: [{ 
+  preferredWorkMode: { 
     type: String, 
     enum: ['Full-time', 'Part-time', 'Remote/Teleconsult', 'On-call'] 
-  }],
+  },
   resume: { type: String }, // store file path or URL
   linkedInOrWebsite: { type: String },
   reasonForJoining: { type: String, required: true },

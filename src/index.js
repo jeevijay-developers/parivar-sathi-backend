@@ -10,13 +10,19 @@ const patientRegistration = require("./routes/PatientRegistrationRoute");
 const clinicPartner = require("./routes/clinicPartnerRoute")
 const consultRoutes = require("./routes/consultationRoute")
 const joinUsRoutes = require("./routes/joinUsRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const { initializeAdmin } = require("./controller/AdminController");
 
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("Connected to MongoDB"));
+  .then(() => {
+    console.log("Connected to MongoDB");
+    // Initialize default admin on startup
+    initializeAdmin();
+  });
 // handle CORS
 const DEV_ORIGIN = process.env.DEV_ENV;
 const TEST_ORIGIN = process.env.TEST_ENV;
@@ -41,6 +47,9 @@ const corsOption = {
 // Middleware
 app.use(cors(corsOption));
 app.use(express.json());
+
+// Admin routes
+app.use("/api/admin", adminRoutes);
 
 //OPD routes
 app.use("/api/opds", opdRoutes);

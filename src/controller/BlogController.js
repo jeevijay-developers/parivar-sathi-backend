@@ -15,21 +15,21 @@ const getBlog = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Validate ObjectId to avoid Mongoose CastErrors (which returned 500)
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ success: false, message: 'Invalid blog id' });
+        // Try searching by slug first
+        let specificBlog = await Blog.findOne({ slug: id });
+        
+        // If not found by slug, and id is a valid ObjectId, search by _id
+        if (!specificBlog && mongoose.Types.ObjectId.isValid(id)) {
+            specificBlog = await Blog.findById(id);
         }
 
-        const blog = await Blog.findById(id);
-
-        if (!blog) {
-            return res.status(404).json({ success: false, message: 'Blog not found' });
+        if (!specificBlog) {
+            return res.status(404).json({ success: false, message: "Blog not found" });
         }
-
-        return res.status(200).json(blog);
+        res.status(200).json(specificBlog);
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ success: false, message: 'Error fetching blog' });
+        console.error("Error specifically in getBlog endpoint:", err);
+        res.status(500).json({ success: false, message: "Error fetching specific blog", error: err.message });
     }
 };
 

@@ -80,5 +80,5 @@ router.post("/add-blog", uploadMiddleware, handleCloudinaryUpload, async (req, r
 });
 
 router.get('/getAllBlogs', getAllBlogs);
-router.get('/getBlog/:id', getBlog);
+router.get('/getBlog/:slug', getBlog);
 module.exports = router;

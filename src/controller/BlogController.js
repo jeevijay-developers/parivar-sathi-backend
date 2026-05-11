@@ -13,14 +13,14 @@ const getAllBlogs = async (req, res) => {
 
 const getBlog = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { slug } = req.params;
 
         // Try searching by slug first
-        let specificBlog = await Blog.findOne({ slug: id });
-        
-        // If not found by slug, and id is a valid ObjectId, search by _id
-        if (!specificBlog && mongoose.Types.ObjectId.isValid(id)) {
-            specificBlog = await Blog.findById(id);
+        let specificBlog = await Blog.findOne({ slug });
+
+        // If not found by slug, and slug is a valid ObjectId, search by _id
+        if (!specificBlog && mongoose.Types.ObjectId.isValid(slug)) {
+            specificBlog = await Blog.findById(slug);
         }
 
         if (!specificBlog) {

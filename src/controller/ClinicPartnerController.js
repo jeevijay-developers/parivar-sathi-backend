@@ -75,4 +75,66 @@ const getRegisteredClinics = async (req, res) => {
   }
 }
 
-module.exports = {ClinicPartnershipRegister, getRegisteredClinics};
+const editClinic = async (req, res) => {
+  try {
+    const { clinicId } = req.params;
+    const updateData = req.body;
+
+    // If there's a file upload, handle it
+    if (req.file) {
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(req.file.mimetype)) {
+        return res.status(400).json({
+          message: 'Invalid file type. Only JPG, JPEG and PDF files are allowed'
+        });
+      }
+      updateData.brochureFile = req.file.filename;
+    }
+
+    const updatedClinic = await ClinicPartnership.findByIdAndUpdate(
+      clinicId,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedClinic) {
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
+
+    res.status(200).json({
+      message: 'Clinic updated successfully',
+      data: updatedClinic
+    });
+  } catch (error) {
+    console.error('Error updating clinic:', error);
+    res.status(500).json({
+      message: 'Server error while updating clinic',
+      error: error.message
+    });
+  }
+};
+
+const deleteClinic = async (req, res) => {
+  try {
+    const { clinicId } = req.params;
+
+    const deletedClinic = await ClinicPartnership.findByIdAndDelete(clinicId);
+
+    if (!deletedClinic) {
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
+
+    res.status(200).json({
+      message: 'Clinic deleted successfully',
+      data: deletedClinic
+    });
+  } catch (error) {
+    console.error('Error deleting clinic:', error);
+    res.status(500).json({
+      message: 'Server error while deleting clinic',
+      error: error.message
+    });
+  }
+};
+
+module.exports = {ClinicPartnershipRegister, getRegisteredClinics, editClinic, deleteClinic};

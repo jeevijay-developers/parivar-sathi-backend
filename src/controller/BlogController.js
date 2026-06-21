@@ -33,4 +33,18 @@ const getBlog = async (req, res) => {
     }
 };
 
-module.exports = { getAllBlogs, getBlog };
+const deleteBlog = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await Blog.findByIdAndDelete(id);
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: "Blog not found" });
+        }
+        res.status(200).json({ success: true, message: "Blog deleted" });
+    } catch (err) {
+        console.error("Error deleting blog:", err);
+        res.status(500).json({ success: false, message: "Error deleting blog" });
+    }
+};
+
+module.exports = { getAllBlogs, getBlog, deleteBlog };

@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const Blog = require("../modals/Blog");
 const { uploadToCloudinary } = require("../configure/cloudinary");
-const { getAllBlogs, getBlog } = require("../controller/BlogController")
+const { getAllBlogs, getBlog, deleteBlog } = require("../controller/BlogController")
 
 const router = express.Router();
 
@@ -78,6 +78,46 @@ router.post("/add-blog", uploadMiddleware, handleCloudinaryUpload, async (req, r
     res.status(500).json({ success: false, message: "Error saving blog" });
   }
 });
+
+// Update an existing blog. Reuses the same upload pipeline as add-blog so the
+// banner/content images can optionally be replaced. Images are only overwritten
+// when new files are uploaded; otherwise the existing ones are kept.
+router.put("/:id", uploadMiddleware, handleCloudinaryUpload, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, desc, content } = req.body;
+
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: "Blog not found" });
+    }
+
+    if (title !== undefined) blog.title = title;
+    if (desc !== undefined) blog.desc = desc;
+    if (content !== undefined) blog.content = content;
+
+    // Only replace images if new ones were uploaded
+    if (req.files?.bannerImage?.[0]?.filename) {
+      blog.bannerImage = req.files.bannerImage[0].filename;
+    }
+    if (req.files?.contentImages?.length) {
+      blog.contentImages = req.files.contentImages.map((img) => img.filename);
+    }
+
+    // Keep the slug stable on edit to avoid breaking existing inbound links / SEO.
+    // The pre("save") hook only regenerates the slug when `title` is modified, so
+    // mark the title field as unmodified before saving (slug stays as-is).
+    blog.unmarkModified("title");
+
+    await blog.save();
+    res.status(200).json({ success: true, blog });
+  } catch (err) {
+    console.error("Error updating blog:", err);
+    res.status(500).json({ success: false, message: "Error updating blog" });
+  }
+});
+
+router.delete("/:id", deleteBlog);
 
 router.get('/getAllBlogs', getAllBlogs);
 router.get('/getBlog/:slug', getBlog);
